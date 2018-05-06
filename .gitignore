@@ -1,3 +1,3 @@
 
-.txt
-_pycache_
+*.txt
+./_pycache_/
