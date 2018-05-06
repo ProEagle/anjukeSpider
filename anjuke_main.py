@@ -1,7 +1,9 @@
 # codeing: utf8
 # anjuke_main.py
-# 20180506
-# 主函数，类
+# 2018.05.06
+# 1、解析对应地址的所有房源信息
+# 2、并将对应房源信息输出到txt文件中
+# 3、将搜索到的信息都存到本地mongo数据库中
 
 from urllib import request
 from bs4 import BeautifulSoup

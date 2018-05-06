@@ -1,4 +1,7 @@
 #coding: utf-8
+# zuInfo.py
+# 2018.05.06
+# 1、解析房源列表的所有房源信息
 
 from urllib import request
 from bs4 import BeautifulSoup
