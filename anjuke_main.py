@@ -9,13 +9,12 @@ from urllib import request
 from bs4 import BeautifulSoup
 import re
 import sys, io
-import zuInfo, zuPhone
+import zuInfo, zuPhone, zuMongo
 
 class anjukeSpider(object):
 	def __init__(self):
 		self.zuData = set()
 		self.zuInfo = zuInfo.zuInfo()
-
 
 	def getInfoFromZone(self, zone):
 		self.zuInfo.getRoomItem(zone)

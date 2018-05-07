@@ -6,12 +6,13 @@
 from urllib import request
 from bs4 import BeautifulSoup
 import re
-import sys, io
-import zuPhone
+import sys, io, time, datetime
+import zuPhone, zuMongo
 
 class zuInfo(object):
 	def __init__(self):
 		self.zuPhone = zuPhone.zuPhone()
+		self.mongo = zuMongo.zuMongo()
 
 	def getRoomItem(self, zone):
 		rootUrl = 'https://sh.zu.anjuke.com/fangyuan/'
@@ -69,6 +70,21 @@ class zuInfo(object):
 			print('租金：' + zu_item_price)
 			zu_item_phone = self.zuPhone._get_new_phone(zu_item_id)
 			print('电话：' + zu_item_phone)
+
+			roomItem = {}
+			roomItem['title'] = zu_item_title
+			roomItem['house_type'] = zu_item_info_array[0]
+			roomItem['area'] = zu_item_info_array[1]
+			roomItem['floor'] = zu_item_floor
+			roomItem['landlord'] = zu_item_landlord
+			roomItem['phone'] = zu_item_phone
+			roomItem['village'] = zu_item_village
+			roomItem['address'] = zu_item_address
+			roomItem['rent'] = zu_item_price
+			roomItem['id'] = zu_item_id
+			roomItem['spier-time'] = int(time.time())
+
+			self.mongo.insertItem(zone, roomItem)
 
 			fout.write('标题：' + zu_item_title + '\n')
 			fout.write('户型：' + zu_item_info_array[0] + '\n')
