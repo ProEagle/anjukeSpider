@@ -21,13 +21,18 @@ class zuMongo(object):
 	def insertItem(self, zone, zuItem):
 		conn = MongoClient('localhost', 27017)
 		db = conn.anjuke
-		print("连接成功")
-		for key in zuItem:
-			print(key,": ",zuItem[key])
+
+		select = {"id": zuItem['id']}
+		rel = list(db[zone].find(select))
+		if len(rel) >= 1:
+			return
 		db[zone].insert(zuItem)
 
-
-
-	def findItem(self):
-		pass
+	def findItem(self, zone, zuSelect):
+		conn = MongoClient('localhost', 27017)
+		db = conn.anjuke
+		rel = list(db[zone].find(zuSelect))
+		for i in rel:
+			print(i)
+		return rel
 

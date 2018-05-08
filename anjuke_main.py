@@ -17,7 +17,7 @@ class anjukeSpider(object):
 		self.zuInfo = zuInfo.zuInfo()
 
 	def getInfoFromZone(self, zone):
-		self.zuInfo.getRoomItem(zone)
+		self.zuInfo.getRoomItemByZone(zone)
 
 if __name__ == "__main__":
 	zone = 'baoshan'
