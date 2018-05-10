@@ -7,7 +7,7 @@ from urllib import request
 from bs4 import BeautifulSoup
 import re
 import sys, io, time, datetime
-import zuPhone, zuMongo
+import zuPhone, zuMongo, zuThread
 
 class zuInfo(object):
 	def __init__(self):
