@@ -1,3 +1,5 @@
+#git 忽略文件
 .gitignore
+*.log
 *.txt
 __pycache__/
