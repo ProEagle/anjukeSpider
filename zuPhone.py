@@ -31,11 +31,11 @@ class zuPhone(object):
 			print('请求房源详情页失败')
 			return
 
-		phone = self._get_require_args(response.read())
+		phone = self._get_require_args(response.read(), zuId, url)
 		return phone
 		# self._get_phone_json(args)
 
-	def _get_require_args(self, html):
+	def _get_require_args(self, html, zuId, url):
 		soup = BeautifulSoup(html, 'html.parser', from_encoding='utf-8')
 		jsObjects = soup.find_all('script')
 		jsCont = ''
@@ -44,8 +44,10 @@ class zuPhone(object):
 		argsReq = re.compile(r'ajk\.page\.Zufang.*?;', re.DOTALL)
 		argstr = argsReq.search(jsCont);
 		if argstr == None:
-			print('解析参数失败')
-			return
+			print('房源'+str(zuId) + '解析参数失败')
+			print("电话解析不出来的url:", url)
+			print(jsCont)
+			return ''
 		argstr = argstr.group()
 		# print("对应参数" + argstr)
 		retArgs = {}

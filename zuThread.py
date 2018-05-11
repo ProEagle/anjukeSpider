@@ -9,27 +9,27 @@ import zuInfo
 
 class zuThread(threading.Thread):
 
-	def __init__(self, zone, maxPage, lock):
+	def __init__(self, zone, maxPage, lock, anjuke):
 		threading.Thread.__init__(self)
 		self.zuInfo = zuInfo.zuInfo()
 		self.lock = lock
 		self.maxPage = maxPage
 		self.zone = zone
-		self.loaddingPage = 1;
+		self.anjuke = anjuke
 
 	def run(self):
 		rootUrl = 'https://sh.zu.anjuke.com/fangyuan/'
 		url = rootUrl + self.zone
 		print("threading name:", self.name)
 		# print("threading id:", self.id)
-		if self.loaddingPage > self.maxPage:
+		if self.anjuke.loaddingPage > self.maxPage:
 			print("全部页面都正在下载中...")
 			return
-		while self.loaddingPage <= self.maxPage:
+		while self.anjuke.loaddingPage <= self.maxPage:
 			if self.lock.acquire():
-				if self.loaddingPage <= self.maxPage:
-					pageIndex = self.loaddingPage
-					self.loaddingPage += 1
+				if self.anjuke.loaddingPage <= self.maxPage:
+					pageIndex = self.anjuke.loaddingPage
+					self.anjuke.loaddingPage += 1
 					self.lock.release()
 					self.zuInfo.getRoomItemByPage(self.zone, url, pageIndex)
 				else:

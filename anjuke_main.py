@@ -15,6 +15,8 @@ class anjukeSpider(object):
 	def __init__(self):
 		self.zuData = set()
 		self.zuInfo = zuInfo.zuInfo()
+		self.page = 10
+		self.loaddingPage = 1
 
 	def getInfoFromZone(self, zone):
 		self.zuInfo.getRoomItemByZone(zone)
@@ -24,7 +26,7 @@ class anjukeSpider(object):
 		lock = threading.Lock()
 
 		for i in range(0, threadCount):
-			t = zuThread.zuThread(zone, 10, lock)
+			t = zuThread.zuThread(zone, 10, lock, self)
 			ThreadList.append(t)
 		for t in ThreadList:
 			t.start()
