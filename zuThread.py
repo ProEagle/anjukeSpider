@@ -11,89 +11,36 @@ class zuThread(threading.Thread):
 
 	def __init__(self, zone, maxPage, lock, anjuke):
 		threading.Thread.__init__(self)
-		self.zuInfo = zuInfo.zuInfo()
+		self.logger = logging.getLogger(anjuke.loggerName)
+		self.zuInfo = anjuke.zuInfo
 		self.lock = lock
 		self.maxPage = maxPage
 		self.zone = zone
 		self.anjuke = anjuke
 
+	# 线程启动,线程的主函数，主要用于取地区搜索结果的不同页面
 	def run(self):
 		rootUrl = 'https://sh.zu.anjuke.com/fangyuan/'
 		url = rootUrl + self.zone
-		print("threading name:", self.name)
+		self.logger.info("threading name:" + self.name)
 		# print("threading id:", self.id)
 		if self.anjuke.loaddingPage > self.maxPage:
-			print("全部页面都正在下载中...")
+			self.logger.warning("全部页面都正在下载中...")
 			return
 		while self.anjuke.loaddingPage <= self.maxPage:
 			if self.lock.acquire():
 				if self.anjuke.loaddingPage <= self.maxPage:
+					if self.anjuke.zuInfo.requestErrCnt >= 5:
+						self.logger.error(self.run.__name__ + ' error')
+						self.logger.error('请求出错的次数：' + str(self.anjuke.zuInfo.requestErrCnt))
+						self.logger.error(self.name + '退出')
+						self.lock.release()
+						return
 					pageIndex = self.anjuke.loaddingPage
 					self.anjuke.loaddingPage += 1
 					self.lock.release()
 					self.zuInfo.getRoomItemByPage(self.zone, url, pageIndex)
 				else:
+					self.logger.warning("全部页面已经都正在下载中...")
 					self.lock.release();
 					return
-
-
-		# nothingToRun(n, self)
-
-		# global n, lock, upLimit
-		# time.sleep(1)
-		# if(n >= upLimit):
-		# 	print("get number", n)
-		# 	print("整个线程结束")
-		# 	return
-		# if lock.acquire():
-		# 	nothingToRun(n, self)
-		# 	n += 1
-		# 	lock.release()
-
-# def nothingToRun(a, b):
-# 	aInt = 0
-# 	global n, upLimit
-# 	if n >= upLimit:
-# 		return
-# 	while aInt <= upLimit and n <= upLimit:
-# 		ns = random.randint(0, 2)
-# 		print("thread name: ", b.name)
-# 		print("延时" + str(ns) + "秒")
-# 		time.sleep(ns)
-# 		if lock.acquire():
-# 			if n <= upLimit:
-# 				aInt = n
-# 				n += 1
-# 				print("锁中 get number: aInt = ", aInt)
-# 				print("锁中 get number: n = ", n)
-# 				print("锁中 thread name: ", b.name)
-# 			lock.release()
-# 	print(b.name, "最终结束时number:", aInt)
-
-# if "__main__" == __name__:
-# 	logger = logging.getLogger()
-# 	logger.setLevel(logging.INFO)
-# 	date = time.strftime('%Y%m%d_%H%M', time.localtime(time.time()))
-# 	log_name = date + '.log'
-# 	fn = logging.FileHandler(log_name, mode='w')
-# 	fn.setLevel(logging.DEBUG)
-# 	# formatter = '%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s'
-# 	# fn.setFormatter(formatter)
-# 	logger.addHandler(fn)
-
-# 	# loggin.basicConfig(level=logging.DEBUG, 
-# 	# 					format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
-# 	n = 1
-# 	upLimit = 100
-# 	ThreadList = []
-# 	logger.debug('main start')
-# 	lock = threading.Lock()
-# 	for i in range(0, 30):
-# 		t = zuThread()
-# 		ThreadList.append(t)
-# 	for t in ThreadList:
-# 		t.start()
-# 	for t in ThreadList:
-# 		t.join()
-# 	logger.debug("n = "+ str(n))
-# 	logger.debug('this is a loger debug')

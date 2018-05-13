@@ -5,16 +5,17 @@
 # 2、并将对应房源信息输出到txt文件中
 # 3、将搜索到的信息都存到本地mongo数据库中
 
-from urllib import request
-from bs4 import BeautifulSoup
-import re
-import sys, io, threading
-import zuInfo, zuPhone, zuMongo, zuThread
+import threading, time, sys, io
+import zuInfo, zuPhone, zuMongo, zuThread, zuLog
 
 class anjukeSpider(object):
 	def __init__(self):
-		self.zuData = set()
-		self.zuInfo = zuInfo.zuInfo()
+		self.loggerName = 'debugLogger'
+		self.logFileName = './log/' + time.strftime("%Y%m%d-%H%M%S", time.localtime(time.time())) + '.log'
+
+		self.zuInfo = zuInfo.zuInfo(self.loggerName)
+		self.log = zuLog.zuLogging(self.loggerName)
+
 		self.page = 10
 		self.loaddingPage = 1
 
@@ -34,7 +35,14 @@ class anjukeSpider(object):
 			t.join()
 
 if __name__ == "__main__":
+
+	sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+
 	zone = 'baoshan'
+	# timeStr = time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))
+	# logFileName = timeStr+'.log'
+
 	objSpider = anjukeSpider()
 	# objSpider.getInfoFromZone(zone)
+	objSpider.log.config("DEBUG", "DEBUG", objSpider.logFileName)
 	objSpider.getInfoMultiThread(zone, 5)
